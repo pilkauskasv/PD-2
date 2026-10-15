@@ -1,0 +1,6 @@
+{
+  "name": "Teksto Metrikos",
+  "description": "Teksto metrikų skaičiuoklė (MIPT praktikos darbas #2): sakinių, žodžių, rašybos ženklų ir skaičių kiekio analizė su istorija.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

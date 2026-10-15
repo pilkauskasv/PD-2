@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Teksto Metrikos</string>
+    <string name="title_app">Teksto metrikų skaičiuoklė</string>
+    <string name="subtitle_app">MIPT praktikos darbas #2</string>
+    
+    <string name="label_input_text">Teksto įvestis</string>
+    <string name="placeholder_input">Įveskite arba įklijuokite tekstą analizei...</string>
+    <string name="btn_calculate">Skaičiuoti metrikas</string>
+    <string name="btn_clear">Išvalyti tekstą</string>
+    <string name="btn_samples">Testiniai pavyzdžiai</string>
+    <string name="btn_random_sample">Atsitiktinis sakinys</string>
+    <string name="error_empty_input">Įvesties laukas yra tuščias! Įveskite tekstą skaičiavimui.</string>
+    
+    <string name="title_metrics">Apskaičiuotos metrikos</string>
+    <string name="metric_sentences">Sakiniai</string>
+    <string name="metric_words">Žodžiai</string>
+    <string name="metric_characters">Rašybos ženklai</string>
+    <string name="metric_numbers">Skaičiai</string>
+    
+    <string name="desc_sentences">Sakinių skaičius</string>
+    <string name="desc_words">Žodžių skaičius</string>
+    <string name="desc_characters">Simbolių su tarpais</string>
+    <string name="desc_numbers">Skaičių kiekis</string>
+    
+    <string name="title_history">Skaičiavimų istorija (runtime)</string>
+    <string name="history_empty">Istorija tuščia. Atlikite skaičiavimą arba pasirinkite testinį sakinį.</string>
+    <string name="btn_clear_history">Valyti istoriją</string>
+    <string name="btn_use_history_item">Įkelti į įvestį</string>
+    
+    <string name="dialog_sample_title">Testinių sakinių pavyzdžiai</string>
+    <string name="dialog_close">Uždaryti</string>
+    
+    <string name="sample_1">Labas rytas</string>
+    <string name="sample_2">Rugsėjo 1 prasidėjo karas. Liūdna</string>
+    <string name="sample_3">Vilnius įkurtas 1323 metais, o Kaunas minimas nuo 1361 m.</string>
+    <string name="sample_4">Kiek kainuoja 2 obuoliai ir 15 apelsinų? Iš viso 17 eurų!</string>
+    <string name="sample_5">Ar šiandien lis? Galbūt. Bet pasiimk skėtį!</string>
+</resources>
