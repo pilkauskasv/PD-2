@@ -17,6 +17,10 @@ class ExampleInstrumentedTest {
   fun useAppContext() {
     // Context of the app under test.
     val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-    assertEquals(BuildConfig.APPLICATION_ID, appContext.packageName)
+    // Užtikrinama, kad paketo vardas atitinka tikrąjį applicationId ("com.aistudio.textmetrics.kxmpzq")
+    val expectedApplicationId = BuildConfig.APPLICATION_ID
+    assertEquals(expectedApplicationId, appContext.packageName)
+    assertEquals("com.aistudio.textmetrics.kxmpzq", appContext.packageName)
   }
 }
+

@@ -412,7 +412,9 @@ fun MetricsResultCard(
     modifier: Modifier = Modifier
 ) {
     ElevatedCard(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .testTag("metrics_result_card"),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.elevatedCardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -445,7 +447,9 @@ fun MetricsResultCard(
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        modifier = Modifier
+                            .testTag("metric_summary_format")
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
             }
@@ -461,7 +465,9 @@ fun MetricsResultCard(
                     subtitle = stringResource(R.string.desc_sentences),
                     icon = Icons.Default.ShortText,
                     accentColor = Color(0xFF2563EB),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag("metric_card_sentences")
                 )
                 MetricItemCard(
                     title = stringResource(R.string.metric_words),
@@ -469,7 +475,9 @@ fun MetricsResultCard(
                     subtitle = stringResource(R.string.desc_words),
                     icon = Icons.Default.TextFields,
                     accentColor = Color(0xFF0D9488),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag("metric_card_words")
                 )
             }
 
@@ -483,7 +491,9 @@ fun MetricsResultCard(
                     subtitle = stringResource(R.string.desc_characters),
                     icon = Icons.Default.Pin,
                     accentColor = Color(0xFF7C3AED),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag("metric_card_characters")
                 )
                 MetricItemCard(
                     title = stringResource(R.string.metric_numbers),
@@ -491,7 +501,9 @@ fun MetricsResultCard(
                     subtitle = stringResource(R.string.desc_numbers),
                     icon = Icons.Default.Numbers,
                     accentColor = Color(0xFFEA580C),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag("metric_card_numbers")
                 )
             }
 
@@ -552,7 +564,8 @@ fun MetricItemCard(
                 text = value,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.ExtraBold,
-                color = accentColor
+                color = accentColor,
+                modifier = Modifier.testTag("metric_value_$title")
             )
 
             Text(
@@ -678,7 +691,9 @@ fun HistoryMetricBadge(label: String, value: Int) {
 @Composable
 fun EmptyHistoryCard(modifier: Modifier = Modifier) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .testTag("empty_history_card"),
         shape = RoundedCornerShape(14.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
     ) {
@@ -713,6 +728,7 @@ fun SamplesDialog(
     onDismiss: () -> Unit
 ) {
     AlertDialog(
+        modifier = Modifier.testTag("samples_dialog"),
         onDismissRequest = onDismiss,
         title = {
             Row(
@@ -758,7 +774,10 @@ fun SamplesDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.testTag("dialog_close_button")
+            ) {
                 Text(text = stringResource(R.string.dialog_close))
             }
         }
