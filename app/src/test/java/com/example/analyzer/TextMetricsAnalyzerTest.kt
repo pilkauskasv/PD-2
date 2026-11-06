@@ -437,7 +437,7 @@ class TextMetricsAnalyzerTest {
     // =========================================================================
 
     @Test
-    fun countWords_pureUnicodeLithuanianWord_failsDueToAsciiWordBoundaryBug() {
+    fun countWords_pureUnicodeLithuanianWord_isCorrectlyCountedAsOneWord() {
         // Arrange
         // Žodis sudarytas vien tik iš ne-ASCII lietuviškų raidžių (pvz., „šį“).
         // Pagal lietuvių kalbos taisykles tai yra lygiai 1 prasmingas žodis.
@@ -447,12 +447,8 @@ class TextMetricsAnalyzerTest {
         val actualWordCount = TextMetricsAnalyzer.countWords(text)
 
         // Assert
-        // PAGAL 9 REIKALAVIMĄ:
-        // Šis testas atskleidžia tikrą programos klaidą:
-        // TextMetricsAnalyzer esantis WORD_REGEX = Regex("""\b[\p{L}\p{M}]+(?:[-'’][\p{L}\p{M}]+)*\b""")
-        // naudoja standartinę Java \b ribą, kuri be (?U) vėliavėlės ne-ASCII simbolių
-        // nelaiko žodžio dalimi, todėl žodis „šį“ klaidingai atpažįstamas kaip 0 žodžių.
-        // Pagal 9 reikalavimą: testo nekeičiame, kad jis dirbtinai praeitų.
+        // Naudojant (?U) vėliavėlę WORD_REGEX reguliariojoje išraiškoje,
+        // grynai ne-ASCII žodžiai (kaip „šį“, „ąčę“) teisingai atpažįstami kaip žodžiai.
         assertEquals("Žodis „šį“ turi būti suskaičiuotas kaip 1 žodis", 1, actualWordCount)
     }
 }

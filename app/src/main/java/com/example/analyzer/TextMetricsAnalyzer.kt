@@ -26,8 +26,8 @@ data class TextMetricsResult(
  */
 object TextMetricsAnalyzer {
 
-    // Regex atitinkantis žodžius (tik raidžių sekos su galima brūkšnine jungtimi)
-    private val WORD_REGEX = Regex("""\b[\p{L}\p{M}]+(?:[-'’][\p{L}\p{M}]+)*\b""")
+    // Regex atitinkantis žodžius (Unicode suderinamos ribos su (?U) vėliavėle lietuviškoms raidėms)
+    private val WORD_REGEX = Regex("""(?U)\b[\p{L}\p{M}]+(?:[-'’][\p{L}\p{M}]+)*\b""")
 
     // Regex atitinkantis skaičius (sveikieji ir dešimtainiai skaičiai)
     private val NUMBER_REGEX = Regex("""\b\d+(?:[.,]\d+)*\b""")
