@@ -1,18 +1,42 @@
+# Gradle
+.gradle/
+build/
+**/build/
+
+# IDE / Android Studio
+.idea/
 *.iml
-.gradle
-.kotlin
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# Local configuration & Keystores
 local.properties
-.env
 debug.keystore
+debug.keystore.base64
+*.jks
+*.keystore
+.env
+
+# Build outputs & captures
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Test coverage and reports
+coverage/
+**/coverage/
+report/
+reports/
+**/reports/
+jacoco/
+**/jacoco/
+*.exec
+*.ec
+
+# OS generated files
+.DS_Store
+Thumbs.db
+

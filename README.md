@@ -11,7 +11,7 @@ MIPT praktikos darbas #2. „Android“ programėlė (Kotlin, Jetpack Compose), 
 - [Naudojimas](#naudojimas)
 - [Projekto struktūra ir architektūra](#projekto-struktūra-ir-architektūra)
 - [Metrikų klasės perpanaudojimas](#metrikų-klasės-perpanaudojimas)
-- [Testai](#testai)
+- [Testavimas](#testavimas)
 - [Lokalizacija](#lokalizacija)
 - [Žinomi apribojimai](#žinomi-apribojimai)
 - [Kūrimo eiga](#kūrimo-eiga)
@@ -115,16 +115,122 @@ println(result.toSummaryString()) // "2, 4, 33, 1"
 
 Atskiros funkcijos taip pat prieinamos: `countSentences`, `countWords`, `countCharacters`, `countNumbers`, `countCharactersWithoutSpaces`, `countPunctuation`.
 
-## Testai
+## Testavimas
 
-Vienetiniai testai (`app/src/test/java/com/example/ExampleUnitTest.kt`) tikrina:
+Projektas padengtas automatizuotais testais dviem lygiais: **Vienetiniai (Unit) testai** (`app/src/test/`) ir **Vartotojo sąsajos (UI) / Integraciniai testai** (`app/src/androidTest/`). Iš viso parengti **63 automatizuoti testai**.
 
-- abu užduoties pavyzdžius (`1, 2, 11, 0` ir `2, 4, 33, 1`);
-- kelių sakinių ir skaičių atvejį;
-- tuščią ir tik tarpų įvestį;
-- ViewModel validaciją ir istorijos pildymą.
+### Kaip paleisti testus
 
-Paleidimas: Android Studio lange atidarykite `ExampleUnitTest`, spustelėkite dešinį pelės klavišą ir pasirinkite **Run**, arba Gradle skydelyje paleiskite `app → Tasks → verification → testDebugUnitTest`.
+#### 1. Vienetinių (Unit) testų paleidimas
+Šie testai vykdomi vietiškai JVM aplinkoje ir nereikalauja prijungto įrenginio ar emuliatoriaus.
+
+- **Per komandinę eilutę (Gradle):**
+  ```bash
+  # Linux / macOS:
+  ./gradlew testDebugUnitTest
+
+  # Windows:
+  gradlew.bat testDebugUnitTest
+  ```
+- **Per Android Studio:**
+  1. Projekto lange suraskite aplanką `app/src/test/java/`.
+  2. Spustelėkite ant jo (arba atskiros testų klasės) dešiniuoju pelės klavišu.
+  3. Pasirinkite **Run 'Tests in 'test''** arba paspauskite `Ctrl+Shift+F10` (`Cmd+Shift+R` macOS).
+
+HTML testų ataskaita sugeneruojama aplanke: `app/build/reports/tests/testDebugUnitTest/index.html`.
+
+#### 2. Vartotojo sąsajos (UI / Instrumented) testų paleidimas
+Šie testai testuoja tikrą „Jetpack Compose“ vartotojo sąsajos elgseną. Prieš paleidžiant būtina paleisti „Android“ emuliatorių arba prijungti fizinį įrenginį su įjungtu USB derinimu (debugging).
+
+- **Per komandinę eilutę (Gradle):**
+  ```bash
+  # Linux / macOS:
+  ./gradlew connectedDebugAndroidTest
+
+  # Windows:
+  gradlew.bat connectedDebugAndroidTest
+  ```
+- **Per Android Studio:**
+  1. Projekto lange suraskite aplanką `app/src/androidTest/java/com/example/ui/`.
+  2. Spustelėkite ant `TextMetricsScreenIntegrationTest` dešiniuoju pelės klavišu.
+  3. Pasirinkite **Run 'TextMetricsScreenIntegrationTest'**.
+
+Instrumented testų ataskaita pateikiama: `app/build/reports/androidTests/connected/index.html`.
+
+---
+
+### Testavimo scenarijai (iš viso 63 testai)
+
+#### Vienetiniai (Unit) testai (`app/src/test/`) – 54 testai
+
+1. **`TextMetricsAnalyzerTest` (29 testai):**
+   - **Užduoties etaloniniai pavyzdžiai:**
+     - `Labas rytas` => 1 sakinys, 2 žodžiai, 11 rašybos ženklų, 0 skaičių (formatas `1, 2, 11, 0`).
+     - `Rugsėjo 1 prasidėjo karas. Liūdna` => 2 sakiniai, 4 žodžiai, 33 rašybos ženklai, 1 skaičius (formatas `2, 4, 33, 1`).
+   - **Sakinių skaičiavimas (`countSentences`):** tuščia įvestis, tik tarpai, sakinys be skyrybos, sakinys su tašku, keli sakinių skyrikliai (`.`, `!`, `?`, `…`), pasikartojantys skyrikliai (`???`, `!!!`), eilučių lūžiai (`\n`, `\r\n`), tik skyrybos ženklai.
+   - **Žodžių skaičiavimas (`countWords`):** tuščias tekstas, standartinis sakinys, grynų skaičių ignoravimas žodžių sąraše, žodžiai su brūkšneliais ir apostrofais („lopšys-vežimėlis“, „tamsiai-mėlyna“, „O'Connor“), tekstas tik iš skaičių, lietuviškų raidžių apdorojimas.
+   - **Rašybos ženklų skaičiavimas (`countCharacters`):** tuščias tekstas, simboliai su tarpais ir skyrybos ženklais, tik tarpo ženklai.
+   - **Skaičių skaičiavimas (`countNumbers`):** tekstas be skaičių, sveikieji ir dešimtainiai skaičiai su tašku ir kableliu (pvz., `2`, `3.50`, `15`, `12,75`), vienas po kito einantys skaičiai.
+   - **Papildoma statistika:** simbolių be tarpų skaičiavimas (`countCharactersWithoutSpaces`), skyrybos ženklų ir simbolių skaičiavimas (`countPunctuation`).
+   - **Kraštutiniai atvejai ir našumas:** visiškai tuščias tekstas, didelės apimties tekstas (100+ sakinių ciklas), tekstas vien tik iš skyrybos ženklų.
+   - **Unicode suderinamumas:** tik iš ne-ASCII lietuviškų raidžių sudarytų žodžių atpažinimas (pvz., „šį“).
+
+2. **`TextMetricsViewModelTest` (16 testų):**
+   - Pradinės būsenos inicializavimas (tuščias įvesties laukas, tuščia istorija, nematomas dialogas).
+   - Testinių sakinių pavyzdžių sąrašo užkrovimas ir integralumas.
+   - Įvesties lauko reikšmės keitimas (`onTextChanged`).
+   - Ankstesnės klaidos automatinis panaikinimas pradėjus vesti tekstą.
+   - **Įvesties validacija:** bandymas skaičiuoti tuščią lauką arba tik tarpų seką nustato klaidos pranešimą ir nepildo istorijos.
+   - Sėkmingas skaičiavimas: metrikų apskaičiavimas ir naujo įrašo įtraukimas į istoriją.
+   - **Istorijos eiliškumas (LIFO):** keli skaičiavimai iš eilės garantuoja, kad naujausias įrašas visada yra sąrašo viršuje (indeksu `0`).
+   - Pavyzdinio sakinio parinkimas (`loadSample`) ir atsitiktinio sakinio užkrovimas (`loadRandomSample`).
+   - Istorijos įrašo paspaudimas (`selectHistoryItem`): teksto ir rezultatų sugrąžinimas į redaktorių.
+   - Įvesties išvalymas (`clearInput`), istorijos išvalymas (`clearHistory`), klaidos atmetimas (`dismissError`).
+   - Pavyzdžių dialogo matomumo perjungimas (`setSampleDialogVisible`).
+
+3. **`TextMetricsModelsTest` (7 testai):**
+   - `TextMetricsResult`: numatytosios ir nurodytos reikšmės, `toSummaryString()` formatavimas, duomenų klasės funkcijos (`equals`, `hashCode`, `copy`, `component1..6`).
+   - `HistoryRecord`: unikalaus identifikatoriaus ir laiko žymos (timestamp) generavimas, duomenų klasės elgsena.
+   - `TextMetricsUiState`: būsenos savybės, numatytosios reikšmės ir modifikavimas.
+
+4. **`ThemeTest` (2 testai):**
+   - Material 3 šviesios ir tamsios temų spalvų žetonų (tokens) verifikacija.
+   - Tipografijos stilių egzistavimo patikra.
+
+---
+
+#### Vartotojo sąsajos (UI / Instrumented) testai (`app/src/androidTest/`) – 9 testai
+
+1. **`TextMetricsScreenIntegrationTest` (8 scenarijai):**
+   - **1 scenarijus:** Tuščio lauko validacija – paspaudus „Skaičiuoti metrikas“, rodomas klaidos pranešimas, metrikų kortelė nerodoma, istorija nepildoma.
+   - **2 scenarijus:** Užduoties 1 pavyzdys – įvedus „Labas rytas“, rodomos metrikos `1, 2, 11, 0` ir istorijos įrašas `„Labas rytas“ => 1, 2, 11, 0`.
+   - **3 scenarijus:** Užduoties 2 pavyzdys – įvedus „Rugsėjo 1 prasidėjo karas. Liūdna“, gaunamas rezultatas `2, 4, 33, 1` ir atitinkamas istorijos įrašas.
+   - **4 scenarijus:** Testinių sakinių dialogas – mygtuko paspaudimas atidaro dialogą, pasirinkus sakinį jis įkeliamas į įvesties lauką, dialogas užsidaro ir automatiškai suskaičiuojamos metrikos.
+   - **5 scenarijus:** Atsitiktinio sakinio mygtukas viršutinėje juostoje (`TopAppBar`) parenka sakinį ir prideda įrašą į istoriją.
+   - **6 scenarijus:** Istorijos sąveika – paspaudus istorijos įrašą, jo tekstas atkuriamas įvesties lauke.
+   - **7 scenarijus:** Istorijos valymas – paspaudus „Valyti istoriją“, visi įrašai pašalinami ir rodoma tuščios istorijos būsena.
+   - **8 scenarijus:** Ekrano pasukimas / konfigūracijos pasikeitimas – iškvietus `activityRule.scenario.recreate()`, vartotojo įvestas tekstas, apskaičiuotas rezultatas ir istorija išlieka.
+
+2. **`ExampleInstrumentedTest` (1 testas):**
+   - Tikrina „Android“ programėlės kontekstą ir paketo identifikatorių (`com.aistudio.textmetrics.kxmpzq`).
+
+---
+
+### Kodo padengimas (Test Coverage)
+
+Vienetiniai testai užtikrina aukštą projekto kodo padengimą:
+
+| Modulis / Klasė | Padengimas (Line / Branch) | Aprašymas |
+|---|---|---|
+| `com.example.analyzer.TextMetricsAnalyzer` | **100 %** | Pilnai padengtos visos funkcijos, reguliariosios išraiškos, skyrikliai ir kraštutiniai atvejai. |
+| `com.example.ui.TextMetricsViewModel` | **100 %** | Padengti visi vartotojo sąsajos veiksmai, validacijos logika, būsenos srautas (`StateFlow`) ir pavyzdžių valdymas. |
+| `com.example.ui.TextMetricsResult` | **100 %** | Padengti visi konstruktoriai, formatavimo metodas `toSummaryString()` ir duomenų savybės. |
+| `com.example.ui.HistoryRecord` | **100 %** | Padengti ID generavimo, laiko žymos ir duomenų klasių metodai. |
+| `com.example.ui.TextMetricsUiState` | **100 %** | Padengta vartotojo sąsajos būsenos duomenų klasė. |
+| `com.example.ui.theme` | **100 %** | Padengtos spalvų konstantos ir tipografija. |
+
+Kodo padengimo ataskaitą galima sugeneruoti naudojant Android Studio: spustelėkite dešiniuoju pelės klavišu ant `app/src/test` aplanko ir pasirinkite **More Run/Debug → Run 'Tests in 'test'' with Coverage**.
+
 
 ## Lokalizacija
 
